@@ -1,0 +1,33 @@
+1ª Passo: Criar as camadas e pastas
+2ª Passo: No projeto 'DevIO.Business' \ pasta 'Models' \ Criar as classes de modelagens de banco de dados
+3ª Passo: No projeto 'DevIO.Data' \ pasta 'Context' \ Criar a classe base de dados e montar estrutura de base dados
+   1) Instalar pacote: 'Install-Package Microsoft.EntityFrameworkCore' no projeto 'DevIO.Data' selecionado
+   2) Referenciando 'DevIO.Business' regra de negócio
+   3) na pasta Mappings, estruturar as tabelas do bancos de dados e colunas
+   4) Instalar pacote : Install-Package Microsoft.EntityFrameworkCore.Relational
+4ª Passo: no projeto 'DevIO.App' na classe 'Startup' incluir servicesDbContecxt do no nome do context tbm para Entity de login
+5ª Passo: Gerar migrate
+
+Add-Migration Inicial -StartupProject DevIO.App -Project DevIO.App -Context ApplicationDbContext -Verbose
+update-database -StartupProject DevIO.App -Project DevIO.App -Context ApplicationDbContext -Verbose
+
+Add-Migration Inicial -StartupProject DevIO.App -Project DevIO.Data -Context MeuDbContext
+update-database -StartupProject DevIO.App -Project DevIO.Data -Context MeuDbContext -Verbose
+
+6ª Passo: instalar pacote nesse caso SQL SERVER Install.Package Microsoft.EntityFrameworkCore.SqlServer
+7ª Passo: Gerar scripts: Script-Migration - Context MeuDbContext -> após concluir salvar o scripts
+
+8ª Passo para injetar banco de dados através da regra de negócio projeto DevIO.Business:
+   1) Na pasta Intefaces genérico IRepository
+   2) Gerar demais interface dos nomes com inicial I
+   3) alem das funcões genéricas instaciada IRepository, incluido mais dois abaixos mais específicos para cada interface de manipulação caso houver além usado 'IRepository' genéricos
+
+9ª Passo: Projeto DevIO.Data na pasta Repository:
+   1) Criar uma classe genrérico 'Repository' de acordo com que foi criado no projeto 'DevIO.Business' - contrato
+   2) Alem de herdar e usar as funçoes da classe genérica na pasta 'Repository', podendo implementar outras funções específicos para a classe está sendo feita como por exemplo ProdutoRepository
+
+10ª Passo: ir na classe startup -> adicionar injecção de dependências: (pronto para injetar)
+   1) services.AddScoped<MeuDbContext>();
+      1A) services.AddScoped<IProdutoRepository, ProdutoRepository>();
+      1B) services.AddScoped<IFornecedorRepository, FornecedorRepository>();
+      1C) services.AddScoped<IEnderecoRepository, EnderecoRepository>();
